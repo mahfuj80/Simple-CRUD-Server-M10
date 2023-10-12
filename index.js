@@ -6,7 +6,7 @@ const port = process.env.PORT || 5000;
 
 // Middleware
 app.use(cors());
-app.use(express());
+app.use(express.json());
 
 // mahfujurrahman06627
 // VaZUzqvqFmWv5LW7
@@ -27,6 +27,15 @@ async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
+    const database = client.db('insertDB');
+    const userCollection = database.collection('users');
+    app.post('/users', async (req, res) => {
+      const user = req.body;
+      console.log('new user', user);
+      const result = await userCollection.insertOne(user);
+      res.send(result);
+    });
+
     // Send a ping to confirm a successful connection
     await client.db('admin').command({ ping: 1 });
     console.log(
